@@ -18,7 +18,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Category, Resolution } from "@/types";
-import { Crown, Plus, Target, Trophy, ArrowUpRight } from "lucide-react";
+import {
+  Crown,
+  Plus,
+  Target,
+  Trophy,
+  ArrowUpRight,
+  CheckCircle2,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -54,11 +61,26 @@ export function Resolutions({
     });
   };
 
+  const markComplete = (id: string) => {
+    setResolutions(
+      resolutions.map((r) => (r.id === id ? { ...r, current: r.target } : r)),
+    );
+    toast.success("Objective Sealed", {
+      description: "Protocol marked as 100% complete.",
+      icon: <CheckCircle2 className="w-5 h-5 text-zinc-950" />,
+      style: { background: "#10b981", color: "#09090b", fontWeight: "bold" },
+    });
+  };
+
+  // Global Dashboard Logic (Hidden on cards, but visible in Hero)
   const overallProgress = resolutions.length
     ? Math.round(
-        (resolutions.reduce((acc, r) => acc + r.current / r.target, 0) /
+        (resolutions.reduce(
+          (acc, r) => acc + Math.min(r.current / r.target, 1),
+          0,
+        ) /
           resolutions.length) *
-          100
+          100,
       )
     : 0;
 
@@ -138,21 +160,13 @@ export function Resolutions({
             onDelete={(id) =>
               setResolutions(resolutions.filter((r) => r.id !== id))
             }
-            onIncrement={(id) =>
-              setResolutions(
-                resolutions.map((r) =>
-                  r.id === id
-                    ? { ...r, current: Math.min(r.current + 1, r.target) }
-                    : r
-                )
-              )
-            }
+            onComplete={markComplete}
           />
         ))}
 
         <button
           onClick={() => setIsDialogOpen(true)}
-          className="border-2 border-dashed border-zinc-800 rounded-[2rem] p-8 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all flex flex-col items-center justify-center min-h-[220px] group"
+          className="border-2 border-dashed border-zinc-800 rounded-[2rem] p-8 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all flex flex-col items-center justify-center min-h-[180px] group"
         >
           <div className="p-4 bg-zinc-900 rounded-2xl group-hover:scale-110 group-hover:bg-zinc-800 transition-all duration-500 mb-4 shadow-xl">
             <Plus className="w-8 h-8 text-zinc-600 group-hover:text-amber-500" />
@@ -235,7 +249,7 @@ export function Resolutions({
                       <SelectItem key={cat} value={cat}>
                         {cat}
                       </SelectItem>
-                    )
+                    ),
                   )}
                 </SelectContent>
               </Select>
