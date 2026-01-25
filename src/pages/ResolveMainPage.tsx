@@ -12,7 +12,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -20,33 +19,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  CalendarDays,
-  Check,
   CheckCircle2,
   Circle,
   Flame,
-  ListTodo,
   Lock,
-  Unlock,
   Plus,
   Target,
   Trash2,
   Trophy,
-  X,
+  Zap,
+  Crown,
   ShieldCheck,
+  ChevronRight,
+  TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
-// --- TYPES ---
+// --- TYPES & MOCK DATA ---
 type Category = "Personal" | "Coding" | "Health" | "Finance" | "Career";
 
 interface Resolution {
@@ -55,412 +46,409 @@ interface Resolution {
   category: Category;
   target: number;
   current: number;
-  unit: string;
   completed: boolean;
+  priority: "A" | "B" | "C";
 }
 
 interface Todo {
   id: string;
   text: string;
   completed: boolean;
-  priority: "High" | "Medium" | "Low";
-  date: string;
+  timestamp: string;
 }
 
-interface UserSettings {
-  name: string;
-  pin: string | null;
-}
-
-// --- HOOKS ---
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") return initialValue;
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {}
-  };
-  return [storedValue, setValue] as const;
-}
-
-// --- REFINED LOGIN DIALOG ---
-const ResolutionAuthDialog = ({
-  settings,
+// --- PREMIUM AUTH DIALOG ---
+const VaultGuard = ({
+  pin,
   onSuccess,
   open,
   onOpenChange,
 }: {
-  settings: UserSettings;
-  onSuccess: (newPin?: string) => void;
+  pin: string | null;
+  onSuccess: (p?: string) => void;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (o: boolean) => void;
 }) => {
-  const [inputPin, setInputPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
-  const [error, setError] = useState("");
-  const isSetup = settings.pin === null;
+  const [val, setVal] = useState("");
+  const isSetup = pin === null;
 
-  const handleAuth = () => {
-    setError("");
-    if (isSetup) {
-      if (inputPin.length < 4) return setError("PIN must be 4+ digits");
-      if (inputPin !== confirmPin) return setError("PINs do not match");
-      onSuccess(inputPin);
-    } else {
-      if (inputPin === settings.pin) {
-        onSuccess();
-      } else {
-        setError("Access Denied: Incorrect PIN");
-        setInputPin("");
-      }
-    }
+  const handleSubmit = () => {
+    if (isSetup && val.length >= 4) onSuccess(val);
+    else if (val === pin) onSuccess();
+    else setVal("");
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-zinc-950 border-zinc-800 shadow-2xl">
+      <DialogContent className="sm:max-w-md bg-zinc-950 border-amber-500/30 shadow-[0_0_50px_-12px_rgba(245,158,11,0.3)]">
         <DialogHeader className="items-center text-center">
-          <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4 border border-emerald-500/20">
-            <ShieldCheck className="w-8 h-8 text-emerald-500" />
+          <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-700 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-amber-900/40">
+            <Crown className="w-10 h-10 text-zinc-950" />
           </div>
-          <DialogTitle className="text-2xl font-bold tracking-tight text-white">
-            {isSetup ? "Initialize Vault" : "Encrypted Access"}
+          <DialogTitle className="text-3xl font-black text-amber-100 tracking-tighter italic uppercase">
+            {isSetup ? "Create Master Key" : "The Resolution Vault"}
           </DialogTitle>
-          <DialogDescription className="text-zinc-400">
-            {isSetup
-              ? "Set a secure PIN for your 2026 resolutions."
-              : "Enter your security PIN to view goals."}
+          <DialogDescription className="text-amber-500/60 font-medium">
+            Authorized Personnel Only — Dikie Prestige Access
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-6">
-          <div className="space-y-3">
-            <Input
-              type="password"
-              placeholder="••••"
-              value={inputPin}
-              onChange={(e) => setInputPin(e.target.value)}
-              className="bg-zinc-900 border-zinc-700 text-center text-2xl h-14 tracking-[0.5em] focus:ring-emerald-500/20"
-              maxLength={8}
-            />
-            {isSetup && (
-              <Input
-                type="password"
-                placeholder="Confirm PIN"
-                value={confirmPin}
-                onChange={(e) => setConfirmPin(e.target.value)}
-                className="bg-zinc-900 border-zinc-700 text-center text-2xl h-14 tracking-[0.5em]"
-                maxLength={8}
-              />
-            )}
-          </div>
-          {error && (
-            <p className="text-red-400 text-xs text-center font-medium animate-pulse">
-              {error}
-            </p>
-          )}
+        <div className="py-8">
+          <Input
+            type="password"
+            placeholder="••••"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+            className="bg-zinc-900/50 border-amber-500/20 text-center text-4xl h-20 tracking-[1em] text-amber-400 focus-visible:ring-amber-500/50"
+            maxLength={6}
+          />
         </div>
         <Button
-          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg transition-all"
-          onClick={handleAuth}
+          onClick={handleSubmit}
+          className="w-full h-14 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-lg rounded-xl shadow-lg shadow-amber-500/20"
         >
-          {isSetup ? "Setup Vault" : "Unlock Resolutions"}
+          {isSetup ? "INITIALIZE SYSTEM" : "UNLOCK PRESTIGE"}
         </Button>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default function ResolveMainPage() {
-  const [settings, setSettings] = useLocalStorage<UserSettings>(
-    "dikie-settings",
-    { name: "Dikie", pin: null },
-  );
-  const [resolutions, setResolutions] = useLocalStorage<Resolution[]>(
-    "dikie-resolutions",
-    [],
-  );
-  const [todos, setTodos] = useLocalStorage<Todo[]>("dikie-todos", []);
+export default function PrestigeApp() {
+  const [activeTab, setActiveTab] = useState("momentum");
+  const [isAuth, setIsAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [pin, setPin] = useState<string | null>(null);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState("todos");
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
-
-  const [resTitle, setResTitle] = useState("");
-  const [resCategory, setResCategory] = useState<Category>("Personal");
-  const [todoInput, setTodoInput] = useState("");
-
-  const handleTabChange = (value: string) => {
-    if (value === "resolutions" && !isAuthenticated) {
-      setIsAuthDialogOpen(true);
-    } else {
-      setActiveTab(value);
-    }
-  };
-
-  const handleLoginSuccess = (newPin?: string) => {
-    if (newPin) setSettings((prev) => ({ ...prev, pin: newPin }));
-    setIsAuthenticated(true);
-    setIsAuthDialogOpen(false);
-    setActiveTab("resolutions");
-  };
-
-  // --- LOGIC HANDLERS ---
-  const addResolution = () => {
-    if (!resTitle.trim()) return;
-    const newRes: Resolution = {
-      id: crypto.randomUUID(),
-      title: resTitle,
-      category: resCategory,
-      target: 100,
-      current: 0,
-      unit: "%",
+  const [todos, setTodos] = useState<Todo[]>([
+    {
+      id: "1",
+      text: "Refactor Auth Provider",
       completed: false,
-    };
-    setResolutions([...resolutions, newRes]);
-    setResTitle("");
-  };
+      timestamp: "10:00 AM",
+    },
+    { id: "2", text: "Daily Standup", completed: true, timestamp: "09:00 AM" },
+  ]);
 
-  const addTodo = () => {
-    if (!todoInput.trim()) return;
-    setTodos([
-      {
-        id: crypto.randomUUID(),
-        text: todoInput,
-        completed: false,
-        priority: "Medium",
-        date: new Date().toISOString(),
-      },
-      ...todos,
-    ]);
-    setTodoInput("");
+  const [resolutions] = useState<Resolution[]>([
+    {
+      id: "1",
+      title: "Master Distributed Systems",
+      category: "Coding",
+      target: 100,
+      current: 65,
+      completed: false,
+      priority: "A",
+    },
+    {
+      id: "2",
+      title: "Visit 5 New Countries",
+      category: "Personal",
+      target: 5,
+      current: 1,
+      completed: false,
+      priority: "B",
+    },
+    {
+      id: "3",
+      title: "Portfolio Return +25%",
+      category: "Finance",
+      target: 25,
+      current: 12,
+      completed: false,
+      priority: "A",
+    },
+  ]);
+
+  const stats = useMemo(
+    () => ({
+      completed: resolutions.filter((r) => r.completed).length,
+      progress: Math.round(
+        (resolutions.reduce(
+          (acc, curr) => acc + curr.current / curr.target,
+          0,
+        ) /
+          resolutions.length) *
+          100,
+      ),
+    }),
+    [resolutions],
+  );
+
+  const handleTabToggle = (val: string) => {
+    if (val === "vault" && !isAuth) setShowAuth(true);
+    else setActiveTab(val);
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 pb-20 selection:bg-emerald-500/30">
-      <nav className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Flame className="w-6 h-6 text-emerald-500 fill-emerald-500/20" />
-            <span className="font-bold text-lg tracking-tight">
-              Dikie<span className="text-emerald-500 text-xs ml-1">v2.0</span>
+    <div
+      className={`min-h-screen transition-colors duration-700 ${activeTab === "vault" ? "bg-zinc-950" : "bg-zinc-50"}`}
+    >
+      {/* Dynamic Navbar */}
+      <nav
+        className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all ${activeTab === "vault" ? "bg-zinc-950/80 border-amber-500/20" : "bg-white/80 border-zinc-200"}`}
+      >
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2 rounded-lg ${activeTab === "vault" ? "bg-amber-500" : "bg-emerald-600"}`}
+            >
+              <Zap
+                className={
+                  activeTab === "vault" ? "text-zinc-950" : "text-white"
+                }
+                size={18}
+              />
+            </div>
+            <span
+              className={`font-black text-xl tracking-tighter uppercase ${activeTab === "vault" ? "text-amber-100" : "text-zinc-900"}`}
+            >
+              Dikie{" "}
+              <span
+                className={
+                  activeTab === "vault" ? "text-amber-500" : "text-emerald-600"
+                }
+              >
+                2026
+              </span>
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            {isAuthenticated && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsAuthenticated(false)}
-                className="text-zinc-500 hover:text-white"
+          <Tabs
+            value={activeTab}
+            onValueChange={handleTabToggle}
+            className="w-auto"
+          >
+            <TabsList
+              className={`p-1 ${activeTab === "vault" ? "bg-zinc-900 border-zinc-800" : "bg-zinc-100"}`}
+            >
+              <TabsTrigger
+                value="momentum"
+                className="data-[state=active]:shadow-sm"
               >
-                <Lock className="w-4 h-4 mr-2" /> Lock Vault
-              </Button>
-            )}
-            <Badge variant="outline" className="border-zinc-700 text-zinc-400">
-              2026
-            </Badge>
-          </div>
+                Daily Momentum
+              </TabsTrigger>
+              <TabsTrigger
+                value="vault"
+                className="data-[state=active]:bg-amber-500 data-[state=active]:text-zinc-950"
+              >
+                <Lock size={14} className="mr-2" /> The Vault
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto p-4 md:p-8">
-        <Tabs
-          value={activeTab}
-          onValueChange={handleTabChange}
-          className="w-full"
+      <main className="max-w-6xl mx-auto p-6 md:p-10">
+        <TabsContent
+          value="momentum"
+          className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-4"
         >
-          <div className="flex items-center justify-between mb-8">
-            <TabsList className="bg-zinc-900 border border-zinc-800 p-1">
-              <TabsTrigger
-                value="todos"
-                className="data-[state=active]:bg-zinc-800"
-              >
-                <ListTodo className="w-4 h-4 mr-2" /> Daily Momentum
-              </TabsTrigger>
-              <TabsTrigger
-                value="resolutions"
-                className="data-[state=active]:bg-zinc-800"
-              >
-                {isAuthenticated ? (
-                  <Unlock className="w-4 h-4 mr-2 text-emerald-500" />
-                ) : (
-                  <Lock className="w-4 h-4 mr-2" />
-                )}
-                Resolutions
-              </TabsTrigger>
-            </TabsList>
+          <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-black text-zinc-900 tracking-tight">
+                Today's Focus
+              </h1>
+              <p className="text-zinc-500 font-medium">
+                Build momentum. One task at a time.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter high-impact task..."
+                className="w-full md:w-80 h-12 bg-white border-zinc-200 shadow-sm"
+              />
+              <Button className="h-12 bg-emerald-600 hover:bg-emerald-700 px-6 font-bold">
+                ADD TASK
+              </Button>
+            </div>
+          </header>
 
-            {activeTab === "resolutions" && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="bg-emerald-600 hover:bg-emerald-500">
-                    <Plus className="w-4 h-4 mr-2" /> Goal
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                  <DialogHeader>
-                    <DialogTitle>New Resolution</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <Input
-                      placeholder="Goal Title"
-                      value={resTitle}
-                      onChange={(e) => setResTitle(e.target.value)}
-                      className="bg-zinc-950 border-zinc-700"
-                    />
-                    <Select
-                      value={resCategory}
-                      onValueChange={(val: Category) => setResCategory(val)}
-                    >
-                      <SelectTrigger className="bg-zinc-950 border-zinc-700">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        {[
-                          "Personal",
-                          "Coding",
-                          "Health",
-                          "Finance",
-                          "Career",
-                        ].map((c) => (
-                          <SelectItem key={c} value={c}>
-                            {c}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      onClick={addResolution}
-                      className="w-full bg-emerald-600"
-                    >
-                      Create
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
-          <TabsContent value="todos">
-            <Card className="bg-zinc-900/50 border-zinc-800">
-              <CardHeader>
-                <CardTitle>Daily Momentum</CardTitle>
-                <CardDescription>
-                  {new Date().toLocaleDateString(undefined, {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </CardDescription>
-                <div className="mt-4 flex gap-2">
-                  <Input
-                    value={todoInput}
-                    onChange={(e) => setTodoInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addTodo()}
-                    placeholder="What's the next win?"
-                    className="bg-zinc-950 border-zinc-800"
-                  />
-                  <Button
-                    onClick={addTodo}
-                    className="bg-zinc-100 text-zinc-950 hover:bg-white"
-                  >
-                    Add
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {todos.map((todo) => (
-                  <div
-                    key={todo.id}
-                    className="flex items-center justify-between p-3 bg-zinc-950/50 border border-zinc-800 rounded-lg group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() =>
-                          setTodos(
-                            todos.map((t) =>
-                              t.id === todo.id
-                                ? { ...t, completed: !t.completed }
-                                : t,
-                            ),
-                          )
-                        }
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="md:col-span-2 border-zinc-200 shadow-xl shadow-zinc-200/50">
+              <CardContent className="p-0">
+                <ScrollArea className="h-[500px]">
+                  <div className="divide-y divide-zinc-100">
+                    {todos.map((todo) => (
+                      <div
+                        key={todo.id}
+                        className="flex items-center justify-between p-5 hover:bg-zinc-50 transition-colors group"
                       >
-                        {todo.completed ? (
-                          <CheckCircle2 className="text-emerald-500" />
-                        ) : (
-                          <Circle className="text-zinc-600" />
-                        )}
-                      </button>
-                      <span
-                        className={
-                          todo.completed
-                            ? "line-through text-zinc-600"
-                            : "text-zinc-200"
-                        }
-                      >
-                        {todo.text}
-                      </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() =>
-                        setTodos(todos.filter((t) => t.id !== todo.id))
-                      }
-                      className="opacity-0 group-hover:opacity-100 text-zinc-600 hover:text-red-400"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                        <div className="flex items-center gap-4">
+                          <button
+                            onClick={() => {}}
+                            className={`transition-transform active:scale-90 ${todo.completed ? "text-emerald-500" : "text-zinc-300"}`}
+                          >
+                            {todo.completed ? (
+                              <CheckCircle2 size={28} />
+                            ) : (
+                              <Circle size={28} />
+                            )}
+                          </button>
+                          <div>
+                            <p
+                              className={`font-semibold text-lg ${todo.completed ? "line-through text-zinc-400" : "text-zinc-800"}`}
+                            >
+                              {todo.text}
+                            </p>
+                            <span className="text-xs text-zinc-400 font-mono">
+                              {todo.timestamp}
+                            </span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="resolutions">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {resolutions.map((res) => (
-                <Card key={res.id} className="bg-zinc-900 border-zinc-800">
-                  <CardHeader className="pb-2">
-                    <Badge className="w-fit mb-2 bg-zinc-800 text-zinc-400 border-zinc-700">
-                      {res.category}
-                    </Badge>
-                    <CardTitle className="text-lg">{res.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between text-xs text-zinc-500 mb-2">
-                      <span>Progress</span>
-                      <span>{res.current}%</span>
-                    </div>
-                    <Progress value={res.current} className="h-1.5" />
-                  </CardContent>
-                </Card>
-              ))}
+            <aside className="space-y-6">
+              <Card className="bg-emerald-600 border-none text-white shadow-lg shadow-emerald-200">
+                <CardHeader>
+                  <CardTitle className="text-emerald-100 flex items-center gap-2">
+                    <Flame size={20} /> Daily Streak
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-6xl font-black">12</div>
+                  <p className="text-emerald-100/80 font-medium mt-1">
+                    Days of consistent output
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-zinc-200 shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-sm uppercase tracking-widest text-zinc-400">
+                    Next Priority
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="font-bold text-zinc-800">
+                    Review Financial Resolutions
+                  </p>
+                  <Button
+                    variant="link"
+                    className="p-0 text-emerald-600 h-auto mt-2"
+                  >
+                    Go to Vault <ChevronRight size={14} />
+                  </Button>
+                </CardContent>
+              </Card>
+            </aside>
+          </div>
+        </TabsContent>
+
+        <TabsContent
+          value="vault"
+          className="mt-0 space-y-8 animate-in zoom-in-95"
+        >
+          <div className="flex items-center justify-between border-b border-amber-500/20 pb-8">
+            <div>
+              <div className="flex items-center gap-2 text-amber-500 font-black tracking-widest text-sm mb-1 uppercase">
+                <ShieldCheck size={16} /> Secure Prestige Environment
+              </div>
+              <h1 className="text-5xl font-black text-amber-100 tracking-tighter italic">
+                THE 2026 ARCHIVE
+              </h1>
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <div className="hidden md:flex items-center gap-8">
+              <div className="text-right">
+                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">
+                  Total Progress
+                </p>
+                <p className="text-3xl font-black text-amber-500">
+                  {stats.progress}%
+                </p>
+              </div>
+              <Button
+                size="lg"
+                className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black h-14 rounded-xl px-8 shadow-lg shadow-amber-500/20"
+              >
+                <Plus size={20} className="mr-2" /> NEW GOAL
+              </Button>
+            </div>
+          </div>
 
-      <ResolutionAuthDialog
-        settings={settings}
-        onSuccess={handleLoginSuccess}
-        open={isAuthDialogOpen}
-        onOpenChange={setIsAuthDialogOpen}
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6">
+            {resolutions.map((res, i) => (
+              <Card
+                key={res.id}
+                className={`bg-zinc-900 border-amber-500/10 hover:border-amber-500/40 transition-all cursor-pointer group shadow-2xl ${i === 0 ? "md:col-span-2 md:row-span-2" : ""}`}
+              >
+                <CardHeader className="flex flex-row items-start justify-between pb-2">
+                  <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                    {res.category}
+                  </Badge>
+                  {res.priority === "A" && (
+                    <Crown size={16} className="text-amber-500" />
+                  )}
+                </CardHeader>
+                <CardContent className={i === 0 ? "py-10" : "py-4"}>
+                  <h3
+                    className={`${i === 0 ? "text-3xl" : "text-xl"} font-bold text-zinc-100 mb-6 group-hover:text-amber-400 transition-colors`}
+                  >
+                    {res.title}
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-mono text-amber-500/60 uppercase tracking-widest">
+                      <span>Achievement</span>
+                      <span>
+                        {res.current} / {res.target}
+                      </span>
+                    </div>
+                    <Progress
+                      value={(res.current / res.target) * 100}
+                      className="h-1 bg-zinc-800"
+                      indicatorClassName="bg-amber-500"
+                    />
+                  </div>
+                </CardContent>
+                {i === 0 && (
+                  <CardFooter className="pt-0 border-t border-amber-500/5 mt-4 flex justify-between items-center text-amber-500/40">
+                    <span className="text-xs font-bold flex items-center gap-2">
+                      <TrendingUp size={14} /> Top Priority Goal
+                    </span>
+                    <Button
+                      variant="ghost"
+                      className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10"
+                    >
+                      Manage
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
+            ))}
+
+            <Card className="md:col-span-2 bg-gradient-to-br from-amber-500 to-amber-700 border-none flex flex-col items-center justify-center text-zinc-950 p-8 text-center">
+              <Trophy size={48} className="mb-4 drop-shadow-lg" />
+              <h2 className="text-2xl font-black uppercase italic tracking-tighter">
+                The Winner's Circle
+              </h2>
+              <p className="font-bold text-amber-950 opacity-80 max-w-[200px]">
+                You have {stats.completed} fully achieved goals this year.
+              </p>
+            </Card>
+          </div>
+        </TabsContent>
+      </main>
+
+      <VaultGuard
+        pin={pin}
+        open={showAuth}
+        onOpenChange={setShowAuth}
+        onSuccess={(p) => {
+          if (p) setPin(p);
+          setIsAuth(true);
+          setShowAuth(false);
+          setActiveTab("vault");
+        }}
       />
     </div>
   );
