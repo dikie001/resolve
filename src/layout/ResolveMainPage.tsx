@@ -14,10 +14,7 @@ export default function ResolveMainPage() {
   const [todos, setTodos] = useState([]);
   const [resolutions, setResolutions] = useState([]);
   const [settings, setSettings] = useState({ vaultUnlocked: false });
-
-  const lockVault = () => {
-    setSettings({ ...settings, vaultUnlocked: false });
-  };
+  const lockVault = () => setSettings({ ...settings, vaultUnlocked: false });
 
   return (
     <div className={`flex min-h-screen ${isVault ? "bg-zinc-950 text-white" : "bg-zinc-50 text-zinc-900"}`}>

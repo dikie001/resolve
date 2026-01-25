@@ -8,7 +8,6 @@ import { Crown, Plus, Target, Trophy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-
 export function Resolutions({ resolutions, setResolutions }: { resolutions: Resolution[]; setResolutions: (r: Resolution[]) => void }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newRes, setNewRes] = useState<Partial<Resolution>>({ category: "Personal", target: 100, unit: "%" });
@@ -37,7 +36,7 @@ export function Resolutions({ resolutions, setResolutions }: { resolutions: Reso
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* Vault Hero Section */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="md:col-span-2 bg-linear-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-zinc-950 shadow-lg relative overflow-hidden">
+        <div className="md:col-span-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-zinc-950 shadow-lg relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="w-4 h-4" />
