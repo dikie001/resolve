@@ -1,4 +1,4 @@
-import { Zap, ListTodo, Lock, ShieldCheck, LogOut } from "lucide-react";
+import { Zap, ListTodo, Lock, ShieldCheck, LogOut, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -8,47 +8,92 @@ interface SidebarProps {
   isUnlocked: boolean;
   onLock: () => void;
   isVault: boolean;
+  isDarkMomentum?: boolean;
 }
 
-export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault }: SidebarProps) {
+export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, isDarkMomentum = false }: SidebarProps) {
   const navItems = [
     { id: "momentum", label: "Momentum", icon: ListTodo },
     { id: "vault", label: "The Vault", icon: isUnlocked ? ShieldCheck : Lock },
   ];
 
+  // Determine theme based on context
+  const isDarkTheme = isVault || isDarkMomentum;
+
   return (
-    <aside className={`w-64 border-r flex flex-col fixed inset-y-0 z-50 transition-colors duration-500 ${isVault ? "bg-zinc-950 border-zinc-800" : "bg-white border-zinc-200"}`}>
-      <div className="h-16 flex items-center px-6 border-b border-inherit">
-        <Zap className={`w-5 h-5 mr-3 ${isVault ? "text-amber-500" : "text-blue-600"}`} />
-        <span className={`font-bold tracking-tight ${isVault ? "text-white" : "text-zinc-900"}`}>DIKIE OS</span>
+    <aside className={`w-64 border-r flex flex-col fixed inset-y-0 z-50 transition-all duration-500 ${isDarkTheme ? "bg-zinc-950 border-zinc-800" : "bg-white border-zinc-200"
+      }`}>
+      {/* Header */}
+      <div className={`h-16 flex items-center px-6 border-b transition-colors ${isDarkTheme ? "border-zinc-800" : "border-zinc-200"
+        }`}>
+        <div className={`p-1.5 rounded-lg transition-colors ${isVault ? "bg-amber-500/10" : isDarkMomentum ? "bg-blue-500/10" : "bg-blue-50"
+          }`}>
+          <Zap className={`w-5 h-5 ${isVault ? "text-amber-500" : "text-blue-600"
+            }`} />
+        </div>
+        <span className={`ml-3 font-bold tracking-tight transition-colors ${isDarkTheme ? "text-white" : "text-zinc-900"
+          }`}>DIKIE OS</span>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => (
-          <Button
-            key={item.id}
-            variant="ghost"
-            onClick={() => setActiveTab(item.id as any)}
-            className={`w-full justify-start gap-3 h-10 px-3 ${activeTab === item.id ? (isVault ? "bg-amber-500/10 text-amber-500" : "bg-blue-50 text-blue-700") : "text-zinc-500"}`}
-          >
-            <item.icon className="w-4 h-4" />
-            {item.label}
-          </Button>
-        ))}
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {navItems.map((item) => {
+          const isActive = activeTab === item.id;
+          return (
+            <Button
+              key={item.id}
+              variant="ghost"
+              onClick={() => setActiveTab(item.id as any)}
+              className={`w-full justify-start gap-3 h-11 px-4 rounded-xl font-semibold transition-all duration-200 ${isActive
+                  ? isVault
+                    ? "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20"
+                  : isDarkTheme
+                    ? "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                    : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                }`}
+            >
+              <item.icon className={`w-5 h-5 ${isActive && !isVault ? "animate-pulse" : ""}`} />
+              {item.label}
+            </Button>
+          );
+        })}
       </nav>
-      <div className="p-4 border-t border-inherit space-y-3">
+
+      {/* Footer */}
+      <div className={`p-4 border-t space-y-3 transition-colors ${isDarkTheme ? "border-zinc-800" : "border-zinc-200"
+        }`}>
         {isVault && isUnlocked && (
-          <Button variant="outline" size="sm" onClick={onLock} className="w-full border-zinc-800 text-zinc-400 hover:text-red-400">
-            <LogOut className="w-3 h-3 mr-2" /> Lock
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onLock}
+            className="w-full border-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 font-semibold rounded-xl transition-all"
+          >
+            <LogOut className="w-4 h-4 mr-2" /> Lock Vault
           </Button>
         )}
-        <div className="flex items-center gap-3 px-2">
-          <Avatar className="h-8 w-8 ring-2 ring-blue-500/10">
-            <AvatarFallback className="bg-blue-600 text-white text-xs">DO</AvatarFallback>
+
+        <div className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${isDarkTheme ? "bg-zinc-900/50" : "bg-zinc-50"
+          }`}>
+          <Avatar className={`h-9 w-9 ring-2 transition-all ${isVault
+              ? "ring-amber-500/20"
+              : "ring-blue-500/20"
+            }`}>
+            <AvatarFallback className={`text-xs font-bold ${isVault
+                ? "bg-gradient-to-br from-amber-500 to-amber-600 text-black"
+                : "bg-gradient-to-br from-blue-600 to-blue-700 text-white"
+              }`}>DO</AvatarFallback>
           </Avatar>
-          <div className="text-left">
-            <p className={`text-xs font-bold ${isVault ? "text-white" : "text-zinc-900"}`}>dikie</p>
-            <p className="text-[10px] text-zinc-500">Premium Tier</p>
+          <div className="text-left flex-1">
+            <p className={`text-sm font-bold transition-colors ${isDarkTheme ? "text-white" : "text-zinc-900"
+              }`}>dikie</p>
+            <p className={`text-[10px] font-medium transition-colors ${isDarkTheme ? "text-zinc-500" : "text-zinc-400"
+              }`}>Premium Tier</p>
           </div>
+          {isDarkMomentum && (
+            <Moon className="w-4 h-4 text-blue-500" />
+          )}
         </div>
       </div>
     </aside>
