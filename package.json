@@ -1,6 +1,7 @@
 {
-  "name": "business-card-generator",
+  "name": "resolve",
   "private": true,
+  "author":"Dickens Omondi",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
