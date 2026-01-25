@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/select";
 import type { Category, Resolution } from "@/types";
 import {
+  ArrowUpRight,
+  CheckCircle2,
   Crown,
   Plus,
   Target,
   Trophy,
-  ArrowUpRight,
-  CheckCircle2,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -72,7 +72,7 @@ export function Resolutions({
     });
   };
 
-  // Global Dashboard Logic (Hidden on cards, but visible in Hero)
+  // Global Dashboard Logic
   const overallProgress = resolutions.length
     ? Math.round(
         (resolutions.reduce(
@@ -85,9 +85,9 @@ export function Resolutions({
     : 0;
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
       {/* Vault Hero Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="md:col-span-2 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 rounded-[2rem] p-8 text-zinc-950 shadow-2xl shadow-amber-900/20 relative overflow-hidden group">
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-4">
@@ -114,8 +114,26 @@ export function Resolutions({
           <Target className="absolute right-[-30px] bottom-[-30px] w-56 h-56 text-black opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
         </div>
 
+        <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[2rem] p-7 flex flex-col justify-between group hover:border-amber-500/20 transition-colors">
+          <div className="flex justify-between items-start">
+            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+              Global Completion
+            </span>
+            <ArrowUpRight className="w-4 h-4 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <div>
+            <div className="text-4xl font-black text-white mb-2">
+              {overallProgress}%
+            </div>
+            <Progress
+              value={overallProgress}
+              className="h-1.5 bg-zinc-800"
+              indicatorClassName="bg-amber-500"
+            />
+          </div>
+        </div>
 
-        <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[2rem] p-7 flex flex-col justify-between group hover:border-emerald-500/20 transition-colors">
+        <div className="bg-zinc-900/50 max-md:hidden backdrop-blur-md border border-white/5 rounded-[2rem] p-7 flex flex-col justify-between group hover:border-emerald-500/20 transition-colors">
           <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
             Sealed Goals
           </span>
@@ -134,7 +152,7 @@ export function Resolutions({
       </div>
 
       {/* Resolutions Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
         {resolutions.map((res) => (
           <ResolutionCard
             key={res.id}
@@ -148,7 +166,7 @@ export function Resolutions({
 
         <button
           onClick={() => setIsDialogOpen(true)}
-          className="border-2 border-dashed border-zinc-800 rounded-[2rem] p-8 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all flex flex-col items-center justify-center min-h-[180px] group"
+          className="h-full border-2 border-dashed border-zinc-800 rounded-[2rem] p-8 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all flex flex-col items-center justify-center min-h-[180px] group"
         >
           <div className="p-4 bg-zinc-900 rounded-2xl group-hover:scale-110 group-hover:bg-zinc-800 transition-all duration-500 mb-4 shadow-xl">
             <Plus className="w-8 h-8 text-zinc-600 group-hover:text-amber-500" />
@@ -159,9 +177,9 @@ export function Resolutions({
         </button>
       </div>
 
-      {/* New Resolution Dialog */}
+      {/* New Resolution Dialog - Responsive Fixes Applied */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-950 border-white/5 text-white rounded-[2rem] sm:max-w-[425px]">
+        <DialogContent className="bg-zinc-950 border-white/5 text-white rounded-[2rem] w-[95vw] sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black text-amber-500 italic tracking-tighter">
               NEW PROTOCOL
