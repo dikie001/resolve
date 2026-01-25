@@ -114,24 +114,6 @@ export function Resolutions({
           <Target className="absolute right-[-30px] bottom-[-30px] w-56 h-56 text-black opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
         </div>
 
-        <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[2rem] p-7 flex flex-col justify-between group hover:border-amber-500/20 transition-colors">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-              Global Completion
-            </span>
-            <ArrowUpRight className="w-4 h-4 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-          <div>
-            <div className="text-4xl font-black text-white mb-2">
-              {overallProgress}%
-            </div>
-            <Progress
-              value={overallProgress}
-              className="h-1.5 bg-zinc-800"
-              indicatorClassName="bg-amber-500"
-            />
-          </div>
-        </div>
 
         <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[2rem] p-7 flex flex-col justify-between group hover:border-emerald-500/20 transition-colors">
           <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
