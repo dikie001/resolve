@@ -1,17 +1,29 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Resolution } from "@/types";
-import { CheckCircle2, Trash2, Trophy } from "lucide-react";
+import {
+    CheckCircle2,
+    MoreVertical,
+    MousePointerClick,
+    Trash2,
+    Trophy,
+} from "lucide-react";
 
 interface Props {
   resolution: Resolution;
@@ -24,61 +36,100 @@ export function ResolutionCard({ resolution, onDelete, onComplete }: Props) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Card
-          className={`
-            group relative cursor-pointer border-zinc-800 bg-zinc-900/50 backdrop-blur-sm transition-all duration-500 rounded-[2rem] overflow-hidden min-h-[180px] flex flex-col justify-between
-            ${
-              isCompleted
-                ? "border-emerald-500/30 bg-emerald-950/10"
-                : "hover:border-amber-500/50 hover:bg-zinc-900 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/20"
-            }
-          `}
-        >
-          {/* Hover Gradient */}
-          {!isCompleted && (
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          )}
+      <Card
+        className={`
+          group relative border-zinc-800 bg-zinc-900/50 backdrop-blur-sm transition-all duration-500 rounded-[2rem] overflow-hidden flex flex-col justify-between h-auto min-h-[160px] w-full
+          ${
+            isCompleted
+              ? "border-emerald-500/30 bg-emerald-950/10"
+              : "hover:border-amber-500/50 hover:bg-zinc-900 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/20"
+          }
+        `}
+      >
+        {/* Hover Gradient */}
+        {!isCompleted && (
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        )}
 
-          <CardHeader className="p-6 relative z-10">
-            <div className="flex justify-between items-start mb-4">
-              <Badge
-                variant="outline"
-                className={`text-[9px] font-black uppercase tracking-widest border border-white/5 py-1 px-2.5 rounded-lg ${
-                  isCompleted
-                    ? "text-emerald-500 bg-emerald-500/10"
-                    : "text-zinc-500 bg-black/20"
-                }`}
+        {/* Card Header with Badge and Quick Actions */}
+        <div className="p-6 pb-2 relative z-20 flex justify-between items-start">
+          <Badge
+            variant="outline"
+            className={`text-[9px] font-black uppercase tracking-widest border border-white/5 py-1 px-2.5 rounded-lg shrink-0 ${
+              isCompleted
+                ? "text-emerald-500 bg-emerald-500/10"
+                : "text-zinc-500 bg-black/20"
+            }`}
+          >
+            {resolution.category}
+          </Badge>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 -mr-2 -mt-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-full"
               >
-                {resolution.category}
-              </Badge>
-              {isCompleted && (
-                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                <MoreVertical className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-zinc-950 border-zinc-800 text-zinc-400 rounded-xl min-w-[160px]"
+            >
+              {!isCompleted && (
+                <DropdownMenuItem
+                  onClick={() => onComplete(resolution.id)}
+                  className="text-emerald-500 focus:text-emerald-400 focus:bg-emerald-500/10 cursor-pointer font-medium"
+                >
+                  <CheckCircle2 className="w-4 h-4 mr-2" /> Mark Complete
+                </DropdownMenuItem>
               )}
-            </div>
+              <DropdownMenuItem
+                onClick={() => onDelete(resolution.id)}
+                className="text-red-500 focus:text-red-400 focus:bg-red-500/10 cursor-pointer font-medium"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Clickable Area for Dialog */}
+        <DialogTrigger asChild>
+          <div className="flex-1 flex flex-col cursor-pointer p-6 pt-2 relative z-10">
             <CardTitle
-              className={`text-xl font-bold leading-tight ${
+              className={`text-xl font-bold leading-tight break-words whitespace-normal line-clamp-3 mb-auto ${
                 isCompleted
                   ? "text-emerald-500/50 line-through decoration-emerald-500/30"
-                  : "text-zinc-100"
+                  : "text-zinc-100 group-hover:text-amber-500 transition-colors"
               }`}
             >
               {resolution.title}
             </CardTitle>
-          </CardHeader>
 
-          <CardContent className="p-6 pt-0 relative z-10">
-            <p className="text-xs font-medium text-zinc-600 uppercase tracking-widest group-hover:text-amber-500/70 transition-colors">
-              {isCompleted ? "Protocol Sealed" : "Click to view details"}
-            </p>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
+            <div className="mt-4 flex items-center gap-2 text-xs font-medium text-zinc-600 uppercase tracking-widest group-hover:text-zinc-400 transition-colors">
+              {isCompleted ? (
+                <span className="text-emerald-500 flex items-center">
+                  <Trophy className="w-3 h-3 mr-1.5" /> Sealed
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  <MousePointerClick className="w-3 h-3 mr-1.5 opacity-50" />{" "}
+                  Details
+                </span>
+              )}
+            </div>
+          </div>
+        </DialogTrigger>
+      </Card>
 
-      {/* Expanded Detail View */}
-      <DialogContent className="bg-zinc-950 border-zinc-800 text-white rounded-[2rem] sm:max-w-[500px] p-0 overflow-hidden gap-0">
-        <div className="p-8 pb-6 bg-gradient-to-b from-zinc-900 to-zinc-950">
-          <DialogHeader className="space-y-4">
+      {/* Responsive Dialog Content */}
+      <DialogContent className="bg-zinc-950 border-zinc-800 text-white rounded-[2rem] w-[90vw] max-w-[450px] max-h-[85vh] overflow-y-auto p-0 gap-0 outline-none">
+        {/* Sticky Header */}
+        <div className="p-6 sm:p-8 pb-6 bg-gradient-to-b from-zinc-900 to-zinc-950 sticky top-0 z-20 border-b border-white/5">
+          <DialogHeader className="space-y-4 text-left">
             <div className="flex items-center justify-between">
               <Badge
                 variant="outline"
@@ -87,28 +138,29 @@ export function ResolutionCard({ resolution, onDelete, onComplete }: Props) {
                 {resolution.category}
               </Badge>
               {isCompleted ? (
-                <span className="flex items-center text-emerald-500 font-bold text-xs uppercase tracking-widest">
+                <span className="flex items-center text-emerald-500 font-bold text-xs uppercase tracking-widest shrink-0">
                   <Trophy className="w-4 h-4 mr-2" /> Complete
                 </span>
               ) : (
-                <span className="text-zinc-500 font-bold text-xs uppercase tracking-widest">
+                <span className="text-zinc-500 font-bold text-xs uppercase tracking-widest shrink-0">
                   In Progress
                 </span>
               )}
             </div>
-            <DialogTitle className="text-3xl font-black italic tracking-tighter text-white leading-tight">
+            <DialogTitle className="text-2xl sm:text-3xl font-black italic tracking-tighter text-white leading-tight break-words whitespace-normal">
               {resolution.title}
             </DialogTitle>
           </DialogHeader>
         </div>
 
-        <div className="p-8 pt-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+        {/* Scrollable Body */}
+        <div className="p-6 sm:p-8 pt-6 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5">
               <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold block mb-1">
                 Target
               </span>
-              <span className="text-xl font-black text-white">
+              <span className="text-xl font-black text-white break-all">
                 {resolution.target} {resolution.unit}
               </span>
             </div>
@@ -117,18 +169,20 @@ export function ResolutionCard({ resolution, onDelete, onComplete }: Props) {
                 Status
               </span>
               <span
-                className={`text-xl font-black ${isCompleted ? "text-emerald-500" : "text-amber-500"}`}
+                className={`text-xl font-black ${
+                  isCompleted ? "text-emerald-500" : "text-amber-500"
+                }`}
               >
                 {isCompleted ? "100%" : "Pending"}
               </span>
             </div>
           </div>
 
-          <DialogFooter className="flex-col sm:flex-row gap-3 sm:space-x-0 pt-4">
+          <DialogFooter className="flex flex-col sm:flex-row gap-3 sm:space-x-0 pt-4">
             <Button
               variant="ghost"
               onClick={() => onDelete(resolution.id)}
-              className="flex-1 bg-red-500/5 hover:bg-red-500/10 text-red-500 hover:text-red-400 h-14 rounded-xl"
+              className="w-full sm:flex-1 bg-red-500/5 hover:bg-red-500/10 text-red-500 hover:text-red-400 h-14 rounded-xl"
             >
               <Trash2 className="w-4 h-4 mr-2" /> Delete
             </Button>
@@ -137,7 +191,7 @@ export function ResolutionCard({ resolution, onDelete, onComplete }: Props) {
               <DialogClose asChild>
                 <Button
                   onClick={() => onComplete(resolution.id)}
-                  className="flex-[2] bg-emerald-600 hover:bg-emerald-500 text-white font-black h-14 rounded-xl shadow-lg shadow-emerald-900/20"
+                  className="w-full sm:flex-[2] bg-emerald-600 hover:bg-emerald-500 text-white font-black h-14 rounded-xl shadow-lg shadow-emerald-900/20"
                 >
                   <CheckCircle2 className="w-5 h-5 mr-2" /> MARK COMPLETE
                 </Button>
