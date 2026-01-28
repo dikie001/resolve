@@ -250,7 +250,7 @@ export function Resolutions({
               NEW PROTOCOL
             </DialogTitle>
             <DialogDescription className="text-zinc-500 font-medium">
-              Initialize a new long-term strategic objective.
+              Initialize a new long-term strategic objective dikie.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-6">
