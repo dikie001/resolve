@@ -29,7 +29,7 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 5;
@@ -146,8 +146,7 @@ export function Resolutions({
             </div>
             <Progress
               value={overallProgress}
-              className="h-1.5 bg-zinc-800"
-              indicatorClassName="bg-amber-500"
+              className="h-1.5 bg-zinc-800 [&>*]:bg-amber-500"
             />
           </div>
         </div>
