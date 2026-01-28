@@ -32,9 +32,7 @@ export function AuthDialog({ open, onOpenChange, onUnlock }: AuthDialogProps) {
     setPin(pin.slice(0, -1));
   };
 
-  const handleClear = () => {
-    setPin("");
-  };
+
 
   const handleSubmit = () => {
     if (pin === DEFAULT_PIN) {
