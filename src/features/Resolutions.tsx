@@ -106,10 +106,10 @@ export function Resolutions({
   return (
     <div className="space-y-6 md:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10 px-4 md:px-0">
       {/* Vault Hero Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="md:col-span-2 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 text-zinc-950 shadow-2xl shadow-amber-900/20 relative overflow-hidden group">
+      <div className="grid grid-cols-1 -mt-10 md:-mt-4 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="md:col-span-2 bg-linear-to-br from-amber-400 via-amber-500 to-amber-600 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 text-zinc-950 shadow-2xl shadow-amber-900/20 relative overflow-hidden group">
           <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 bg-black/10 rounded-lg">
                 <Crown className="w-5 h-5" />
               </div>
@@ -118,11 +118,9 @@ export function Resolutions({
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-black italic tracking-tighter mb-2">
-              THE 2026 VAULT
+              THE 2026 RESOLUTIONS
             </h1>
-            <p className="text-sm font-medium text-black/70 max-w-[240px] mb-6 md:mb-8">
-              Securing high-level objectives and performance metrics.
-            </p>
+
             <Button
               onClick={() => setIsDialogOpen(true)}
               className="bg-zinc-950 text-amber-500 hover:bg-zinc-900 border-none font-bold rounded-xl px-6 h-12 shadow-xl active:scale-95 transition-all"
@@ -146,7 +144,7 @@ export function Resolutions({
             </div>
             <Progress
               value={overallProgress}
-              className="h-1.5 bg-zinc-800 [&>*]:bg-amber-500"
+              className="h-1.5 bg-zinc-800 *:bg-amber-500"
             />
           </div>
         </div>

@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+import { AddTodoDialog } from "@/components/app/AddTodoDialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -10,23 +10,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Priority, Todo, TodoCategory } from "@/types";
 import {
   CheckCircle2,
-  Circle,
-  Trash2,
-  Target,
-  Plus,
-  Zap,
   ChevronDown,
   ChevronUp,
-  Search,
+  Circle,
   Filter,
+  Plus,
+  Search,
+  Target,
+  Trash2,
   X,
-  Trash,
+  Zap
 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { Priority, Todo, TodoCategory } from "@/types";
-import { AddTodoDialog } from "@/components/app/AddTodoDialog";
 
 type FilterStatus = "all" | "active" | "completed";
 type SortOption = "newest" | "oldest" | "priority-high" | "priority-low" | "category";
@@ -184,7 +183,7 @@ export function Momentum({
     <div className="space-y-4 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
       {/* Velocity Stats Section - Compact Mobile */}
       <div className="grid grid-cols-1 gap-4">
-        <Card className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 border-none text-white rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl shadow-blue-900/20 overflow-hidden relative group">
+        <Card className="bg-linear-to-br -mt-10 md:-mt-4 from-blue-600 via-blue-700 to-indigo-900 border-none text-white rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl shadow-blue-900/20 overflow-hidden relative group">
           <CardContent className="p-4 md:p-8 relative z-10">
             <div className="flex flex-col gap-4 md:gap-6">
               <div className="flex flex-row justify-between items-center gap-4">
@@ -201,7 +200,7 @@ export function Momentum({
                     {progress}%
                   </h2>
                 </div>
-                <div className="relative h-14 w-14 md:h-24 md:w-24 flex-shrink-0">
+                <div className="relative h-14 w-14 md:h-24 md:w-24 shrink-0">
                   <Target className="w-14 h-14 md:w-24 md:h-24 text-white opacity-10 group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 border-4 border-white/10 rounded-full border-t-white/40 animate-spin-slow" />
                 </div>
@@ -382,7 +381,7 @@ export function Momentum({
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <button
                     onClick={() => toggleTodo(todo.id)}
-                    className={`mt-0.5 md:mt-1 transition-all flex-shrink-0 ${todo.completed ? "text-blue-600" : "text-zinc-300 hover:text-blue-400"
+                    className={`mt-0.5 md:mt-1 transition-all shrink-0 ${todo.completed ? "text-blue-600" : "text-zinc-300 hover:text-blue-400"
                       }`}
                   >
                     {todo.completed ? (
@@ -394,7 +393,7 @@ export function Momentum({
 
                   <div className="space-y-1 md:space-y-2 flex-1 min-w-0">
                     <div>
-                      <p className={`text-sm md:text-lg font-medium md:font-bold tracking-tight break-words ${todo.completed
+                      <p className={`text-sm md:text-lg font-medium md:font-bold tracking-tight wrap-break-word ${todo.completed
                         ? isDarkTheme ? "line-through text-zinc-600" : "line-through text-zinc-400"
                         : isDarkTheme ? "text-white" : "text-zinc-900"
                         }`}>
@@ -404,7 +403,7 @@ export function Momentum({
                       {todo.description && (
                         <div className="mt-1 md:mt-2">
                           {expandedTodos.has(todo.id) ? (
-                            <p className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap break-words ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
+                            <p className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap wrap-break-word ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
                               {todo.description}
                             </p>
                           ) : (
