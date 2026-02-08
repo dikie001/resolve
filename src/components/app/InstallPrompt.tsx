@@ -1,83 +1,86 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Download, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Download, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BeforeInstallPromptEvent extends Event {
-    prompt: () => Promise<void>;
-    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 export function InstallPrompt() {
-    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-    const [showPrompt, setShowPrompt] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [show, setShow] = useState(false);
 
-    useEffect(() => {
-        const handler = (e: Event) => {
-            e.preventDefault();
-            setDeferredPrompt(e as BeforeInstallPromptEvent);
-            setShowPrompt(true);
-        };
-
-        window.addEventListener('beforeinstallprompt', handler);
-        return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
-
-    const handleInstall = async () => {
-        if (!deferredPrompt) return;
-
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-
-        if (outcome === 'accepted') {
-            setDeferredPrompt(null);
-            setShowPrompt(false);
-        }
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      // Check if user previously dismissed it
+      const isDismissed = localStorage.getItem("install_dismissed");
+      if (!isDismissed) {
+        setDeferredPrompt(e as BeforeInstallPromptEvent);
+        setShow(true);
+      }
     };
 
-    const handleDismiss = () => {
-        setShowPrompt(false);
-    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
-    if (!showPrompt) return null;
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setShow(false);
+    }
+  };
 
-    return (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-card border border-border rounded-xl p-4 shadow-2xl z-50 animate-in slide-in-from-bottom-4">
-            <button
-                onClick={handleDismiss}
-                className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted transition-colors"
+  const handleDismiss = () => {
+    setShow(false);
+    // Remember dismissal for this session/device
+    localStorage.setItem("install_dismissed", "true");
+  };
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto z-50"
+        >
+          <div className="flex items-center gap-4 bg-zinc-950/90 backdrop-blur-xl border border-amber-500/20 p-3 pr-12 rounded-2xl shadow-2xl shadow-black/50 relative overflow-hidden">
+            {/* Ambient Glow */}
+            <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
+            
+            <div className="p-2 bg-amber-500/10 rounded-xl shrink-0">
+              <Download className="w-5 h-5 text-amber-500" />
+            </div>
+
+            <div className="flex flex-col">
+              <span className="font-bold text-sm text-white">Install App</span>
+              <span className="text-xs text-zinc-400">Add to home screen</span>
+            </div>
+
+            <Button 
+              size="sm" 
+              onClick={handleInstall}
+              className="ml-2 h-9 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg"
             >
-                <X className="w-4 h-4 text-muted-foreground" />
+              Install
+            </Button>
+
+            <button
+              onClick={handleDismiss}
+              className="absolute top-2 right-2 text-zinc-500 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
             </button>
-
-            <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Download className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground">Install Resolve</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                        Install for quick access and offline use
-                    </p>
-                </div>
-            </div>
-
-            <div className="flex gap-2 mt-4">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={handleDismiss}
-                >
-                    Not now
-                </Button>
-                <Button
-                    size="sm"
-                    className="flex-1"
-                    onClick={handleInstall}
-                >
-                    Install
-                </Button>
-            </div>
-        </div>
-    );
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
