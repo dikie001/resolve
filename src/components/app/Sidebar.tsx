@@ -14,7 +14,7 @@ interface SidebarProps {
 export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, isDarkMomentum = false }: SidebarProps) {
   const navItems = [
     { id: "momentum", label: "Momentum", icon: ListTodo },
-    { id: "vault", label: "The Vault", icon: isUnlocked ? ShieldCheck : Lock },
+    { id: "vault", label: "Resolution", icon: isUnlocked ? ShieldCheck : Lock },
   ];
 
   // Determine theme based on context
@@ -32,7 +32,7 @@ export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, 
             }`} />
         </div>
         <span className={`ml-3 font-bold tracking-tight transition-colors ${isDarkTheme ? "text-white" : "text-zinc-900"
-          }`}>DIKIE OS</span>
+          }`}>RESOLVE</span>
       </div>
 
       {/* Navigation */}
@@ -70,7 +70,7 @@ export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, 
             onClick={onLock}
             className="w-full border-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 font-semibold rounded-xl transition-all"
           >
-            <LogOut className="w-4 h-4 mr-2" /> Lock Vault
+            <LogOut className="w-4 h-4 mr-2" /> Resolutions
           </Button>
         )}
 
@@ -81,8 +81,8 @@ export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, 
               : "ring-blue-500/20"
             }`}>
             <AvatarFallback className={`text-xs font-bold ${isVault
-                ? "bg-gradient-to-br from-amber-500 to-amber-600 text-black"
-                : "bg-gradient-to-br from-blue-600 to-blue-700 text-white"
+                ? "bg-linear-to-br from-amber-500 to-amber-600 text-black"
+                : "bg-linear-to-br from-blue-600 to-blue-700 text-white"
               }`}>DO</AvatarFallback>
           </Avatar>
           <div className="text-left flex-1">
