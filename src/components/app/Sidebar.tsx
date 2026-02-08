@@ -68,9 +68,9 @@ export function Sidebar({ activeTab, setActiveTab, isUnlocked, onLock, isVault, 
             variant="outline"
             size="sm"
             onClick={onLock}
-            className="w-full border-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 font-semibold rounded-xl transition-all"
+            className="w-full border-zinc-800 text-zinc-400 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 hover:border-red-500/30 font-semibold rounded-xl transition-all"
           >
-            <LogOut className="w-4 h-4 mr-2" /> Resolutions
+            <LogOut className="w-4 h-4 mr-2" /> Logout
           </Button>
         )}
 
