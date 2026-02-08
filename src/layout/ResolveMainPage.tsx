@@ -1,159 +1,158 @@
-import { Sidebar } from "@/components/app/Sidebar";
-import { AuthDialog } from "@/components/app/AuthDialog";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Momentum } from "@/features/Momentum";
-import { Resolutions } from "@/features/Resolutions";
-import { Menu, Moon, Sun, Flame } from "lucide-react";
-import { useState } from "react";
-import { Toaster } from "sonner";
-import type { Todo, Resolution } from "@/types";
-import { useStreak } from "@/hooks/useStreak";
+import { 
+  Moon, 
+  Sun, 
+  LayoutGrid, 
+  Bell, 
+  Settings, 
+  Menu 
+} from "lucide-react";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function ResolveMainPage() {
-  const streak = useStreak();
-  const [activeTab, setActiveTab] = useState<"momentum" | "vault">("momentum");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
-  const [isDarkMomentum, setIsDarkMomentum] = useState(false);
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [resolutions, setResolutions] = useState<Resolution[]>([]);
+interface NavbarProps {
+  isDarkTheme: boolean;
+  toggleTheme: () => void;
+}
 
-  const [settings, setSettings] = useState({ vaultUnlocked: false });
+export default function Navbar({ isDarkTheme, toggleTheme }: NavbarProps) {
+  const [greeting, setGreeting] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+  const [scrolled, setScrolled] = useState(false);
 
-  const isVault = activeTab === "vault";
-  const isDarkTheme = isVault || isDarkMomentum;
+  useEffect(() => {
+    // Handle scroll effect
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
 
-  const lockVault = () => setSettings({ ...settings, vaultUnlocked: false });
+    // Handle Time and Greeting
+    const updateTime = () => {
+      const now = new Date();
+      const hour = now.getHours();
+      
+      let greet = "Good Evening";
+      if (hour < 12) greet = "Good Morning";
+      else if (hour < 18) greet = "Good Afternoon";
+      
+      setGreeting(greet);
+      
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setCurrentDate(now.toLocaleDateString('en-US', options));
+    };
 
-  const unlockVault = () => {
-    setSettings({ ...settings, vaultUnlocked: true });
-  };
+    updateTime();
+    // Update every minute to keep current
+    const interval = setInterval(updateTime, 60000); 
 
-  const handleTabChange = (tab: "momentum" | "vault") => {
-    // If trying to access vault while locked, show auth dialog
-    if (tab === "vault" && !settings.vaultUnlocked) {
-      setIsAuthDialogOpen(true);
-      return;
-    }
-    setActiveTab(tab);
-    setIsSidebarOpen(false); // Close mobile menu when tab changes
-  };
-
-  const handleUnlock = () => {
-    unlockVault();
-    setActiveTab("vault");
-  };
-
-  const toggleMomentumTheme = () => {
-    setIsDarkMomentum(!isDarkMomentum);
-  };
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-500 ${isDarkTheme ? "bg-zinc-950 text-white" : "bg-zinc-50 text-zinc-900"
-      }`}>
-      {/* Desktop Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block">
-        <Sidebar
-          activeTab={activeTab}
-          setActiveTab={handleTabChange}
-          isUnlocked={settings.vaultUnlocked}
-          onLock={lockVault}
-          isVault={isVault}
-          isDarkMomentum={isDarkMomentum}
-        />
-      </div>
-
-      {/* Mobile Sidebar Sheet */}
-      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent
-          side="left"
-          className={`w-64 p-0 ${isDarkTheme ? "bg-zinc-950 border-zinc-800" : "bg-white border-zinc-200"}`}
-        >
-          <div className="h-full flex flex-col">
-            <Sidebar
-              activeTab={activeTab}
-              setActiveTab={handleTabChange}
-              isUnlocked={settings.vaultUnlocked}
-              onLock={lockVault}
-              isVault={isVault}
-              isDarkMomentum={isDarkMomentum}
-            />
+    <nav 
+      className={`sticky top-0 z-50 w-full transition-all duration-300 border-b ${
+        scrolled 
+          ? isDarkTheme 
+            ? "bg-zinc-950/80 backdrop-blur-xl border-zinc-800 py-3" 
+            : "bg-white/80 backdrop-blur-xl border-zinc-200/60 py-3"
+          : isDarkTheme
+            ? "bg-zinc-950 border-transparent py-5"
+            : "bg-zinc-50 border-transparent py-5"
+      }`}
+    >
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+        
+        {/* Left: Logo & Mobile Menu */}
+        <div className="flex items-center gap-3">
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" className="-ml-2">
+              <Menu className={`w-6 h-6 ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`} />
+            </Button>
           </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Auth Dialog */}
-      <AuthDialog
-        open={isAuthDialogOpen}
-        onOpenChange={setIsAuthDialogOpen}
-        onUnlock={handleUnlock}
-      />
-
-      <main className="flex-1 lg:pl-64">
-        {/* Mobile Header */}
-        <div className={`lg:hidden flex items-center justify-between p-4 border-b transition-colors ${isDarkTheme ? "border-zinc-800" : "border-zinc-200"
-          }`}>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsSidebarOpen(true)}
-            className={`${isDarkTheme ? "hover:bg-zinc-900" : "hover:bg-zinc-100"}`}
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
-          <span className="font-bold text-sm">DIKIE OS</span>
-          <div className="w-10" />
-        </div>
-
-        <div className="p-6 md:p-10">
-          <header className="mb-10 flex justify-between items-start">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl md:text-3xl font-bold">Good Morning, dikie</h1>
-                {!isVault && (
-                  <Badge
-                    variant="outline"
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-xl font-bold transition-all ${isDarkMomentum
-                        ? "bg-orange-500/10 border-orange-500/30 text-orange-400"
-                        : "bg-orange-50 border-orange-200 text-orange-600"
-                      }`}
-                  >
-                    <Flame className="w-4 h-4" />
-                    <span className="text-sm">{streak} day{streak !== 1 ? 's' : ''}</span>
-                  </Badge>
-                )}
-              </div>
-              <p className={`text-sm mt-1 ${isDarkTheme ? "text-zinc-500" : "text-zinc-500"}`}>
-                System status: Optimal. Ready for session.
-              </p>
+          
+          <div className="flex items-center gap-2">
+            <div className="bg-blue-600 rounded-lg p-1.5 shadow-lg shadow-blue-600/20">
+              <LayoutGrid className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </div>
-
-            {/* Theme Toggle for Momentum */}
-            {!isVault && (
-              <Button
-                onClick={toggleMomentumTheme}
-                variant="outline"
-                size="icon"
-                className={`rounded-xl transition-all ${isDarkMomentum
-                  ? "bg-zinc-900 border-zinc-800 text-blue-400 hover:bg-zinc-800"
-                  : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50"
-                  }`}
-              >
-                {isDarkMomentum ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </Button>
-            )}
-          </header>
-
-          {activeTab === "momentum" ? (
-            <Momentum todos={todos} setTodos={setTodos} isDarkTheme={isDarkMomentum} />
-          ) : (
-            <Resolutions resolutions={resolutions} setResolutions={setResolutions} />
-          )}
+            <span className={`text-lg md:text-xl font-black tracking-tighter ${isDarkTheme ? "text-white" : "text-zinc-900"}`}>
+              Momentum
+            </span>
+          </div>
         </div>
-      </main>
-      <Toaster richColors />
-    </div>
+
+        {/* Center: Greeting (Desktop Only) */}
+        <div className="hidden md:flex flex-col items-center absolute left-1/2 -translate-x-1/2">
+          <h1 className={`text-sm font-medium ${isDarkTheme ? "text-zinc-400" : "text-zinc-500"}`}>
+            {currentDate}
+          </h1>
+          <p className={`text-lg font-bold ${isDarkTheme ? "text-zinc-100" : "text-zinc-800"}`}>
+            {greeting}, <span className="text-blue-500">Dikie</span>
+          </p>
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 md:gap-3">
+          <Button 
+            onClick={toggleTheme} 
+            variant="ghost" 
+            size="icon"
+            className={`rounded-full w-9 h-9 md:w-10 md:h-10 ${isDarkTheme ? "text-zinc-400 hover:bg-zinc-800 hover:text-white" : "text-zinc-500 hover:bg-zinc-100"}`}
+          >
+            {isDarkTheme ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={`hidden md:flex rounded-full w-10 h-10 ${isDarkTheme ? "text-zinc-400 hover:bg-zinc-800 hover:text-white" : "text-zinc-500 hover:bg-zinc-100"}`}
+          >
+            <Bell className="w-5 h-5" />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-9 w-9 md:h-10 md:w-10 rounded-full ml-1">
+                <Avatar className="h-9 w-9 md:h-10 md:w-10 border-2 border-blue-600/20">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@dikie" />
+                  <AvatarFallback className="bg-blue-600 text-white font-bold">DK</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">Dickens Omondi</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    dikie@example.com
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </nav>
   );
 }

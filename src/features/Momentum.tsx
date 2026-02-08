@@ -115,7 +115,6 @@ export function Momentum({
   const filteredAndSortedTodos = useMemo(() => {
     let filtered = todos;
 
-    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -125,24 +124,20 @@ export function Momentum({
       );
     }
 
-    // Status filter
     if (filterStatus === "active") {
       filtered = filtered.filter((t) => !t.completed);
     } else if (filterStatus === "completed") {
       filtered = filtered.filter((t) => t.completed);
     }
 
-    // Category filter
     if (filterCategory !== "all") {
       filtered = filtered.filter((t) => t.category === filterCategory);
     }
 
-    // Priority filter
     if (filterPriority !== "all") {
       filtered = filtered.filter((t) => t.priority === filterPriority);
     }
 
-    // Sorting
     const sorted = [...filtered];
     switch (sortBy) {
       case "newest":
@@ -186,45 +181,45 @@ export function Momentum({
   const hasActiveFilters = filterStatus !== "all" || filterCategory !== "all" || filterPriority !== "all" || searchQuery.trim() !== "";
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
-      {/* Velocity Stats Section */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6">
-        <Card className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 border-none text-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl shadow-blue-900/20 overflow-hidden relative group">
-          <CardContent className="p-6 md:p-8 relative z-10">
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+    <div className="space-y-4 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+      {/* Velocity Stats Section - Compact Mobile */}
+      <div className="grid grid-cols-1 gap-4">
+        <Card className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 border-none text-white rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl shadow-blue-900/20 overflow-hidden relative group">
+          <CardContent className="p-4 md:p-8 relative z-10">
+            <div className="flex flex-col gap-4 md:gap-6">
+              <div className="flex flex-row justify-between items-center gap-4">
+                <div className="space-y-1 md:space-y-2 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
                     <div className="p-1 bg-white/10 rounded-md">
-                      <Zap className="w-4 h-4 text-blue-200" />
+                      <Zap className="w-3 h-3 md:w-4 md:h-4 text-blue-200" />
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-100/70">
-                      Engine Performance
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-blue-100/70">
+                      Velocity
                     </span>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black tracking-tighter italic">
-                    {progress}% <span className="text-lg md:text-xl not-italic font-bold opacity-50 uppercase tracking-widest ml-2">Velocity</span>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter italic">
+                    {progress}%
                   </h2>
                 </div>
-                <div className="relative h-20 w-20 md:h-24 md:w-24 flex-shrink-0">
-                  <Target className="w-20 h-20 md:w-24 md:h-24 text-white opacity-10 group-hover:scale-110 transition-transform duration-700" />
+                <div className="relative h-14 w-14 md:h-24 md:w-24 flex-shrink-0">
+                  <Target className="w-14 h-14 md:w-24 md:h-24 text-white opacity-10 group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 border-4 border-white/10 rounded-full border-t-white/40 animate-spin-slow" />
                 </div>
               </div>
 
               {/* Stats Row */}
-              <div className="flex items-center gap-4 md:gap-6 pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-white/40"></div>
-                  <span className="text-sm font-medium text-blue-100/80">{stats.total} Total</span>
+              <div className="flex items-center justify-between md:justify-start gap-2 md:gap-6 pt-3 md:pt-4 border-t border-white/10">
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/40"></div>
+                  <span className="text-xs md:text-sm font-medium text-blue-100/80">{stats.total} Total</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  <span className="text-sm font-medium text-blue-100/80">{stats.completed} Completed</span>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-400"></div>
+                  <span className="text-xs md:text-sm font-medium text-blue-100/80">{stats.completed} Done</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-                  <span className="text-sm font-medium text-blue-100/80">{stats.active} Active</span>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-orange-400"></div>
+                  <span className="text-xs md:text-sm font-medium text-blue-100/80">{stats.active} Active</span>
                 </div>
               </div>
             </div>
@@ -233,107 +228,102 @@ export function Momentum({
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="space-y-3">
-        <div className="flex gap-2 md:gap-3">
+      <div className="space-y-2 md:space-y-3">
+        <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`} />
+            <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`} />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tasks..."
-              className={`h-11 md:h-12 pl-10 md:pl-12 border-none rounded-xl ${isDarkTheme ? "bg-zinc-900 text-white placeholder:text-zinc-600" : "bg-white text-zinc-900 shadow-sm"}`}
+              placeholder="Search..."
+              className={`h-10 md:h-12 pl-9 md:pl-12 border-none rounded-lg md:rounded-xl text-sm ${isDarkTheme ? "bg-zinc-900 text-white placeholder:text-zinc-600" : "bg-white text-zinc-900 shadow-sm"}`}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
                 className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDarkTheme ? "text-zinc-600 hover:text-zinc-400" : "text-zinc-400 hover:text-zinc-600"}`}
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3 md:w-4 md:h-4" />
               </button>
             )}
           </div>
           <Button
             onClick={() => setShowFilters(!showFilters)}
             variant="outline"
-            className={`h-11 md:h-12 px-3 md:px-4 rounded-xl ${isDarkTheme ? "bg-zinc-900 border-zinc-800 hover:bg-zinc-800" : "bg-white shadow-sm"} ${hasActiveFilters ? "ring-2 ring-blue-500" : ""}`}
+            className={`h-10 md:h-12 px-3 md:px-4 rounded-lg md:rounded-xl ${isDarkTheme ? "bg-zinc-900 border-zinc-800 hover:bg-zinc-800" : "bg-white shadow-sm"} ${hasActiveFilters ? "ring-2 ring-blue-500" : ""}`}
           >
             <Filter className="w-4 h-4 md:mr-2" />
             <span className="hidden md:inline">Filters</span>
             {hasActiveFilters && (
-              <span className="ml-2 w-2 h-2 rounded-full bg-blue-500" />
+              <span className="ml-1.5 md:ml-2 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-500" />
             )}
           </Button>
         </div>
 
         {/* Filter Controls */}
         {showFilters && (
-          <div className={`p-4 md:p-5 rounded-xl md:rounded-2xl space-y-4 animate-in slide-in-from-top-2 duration-200 ${isDarkTheme ? "bg-zinc-900 border-2 border-zinc-800" : "bg-white border-2 border-zinc-200 shadow-sm"}`}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-              <div className="space-y-2">
-                <label className={`text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Status</label>
+          <div className={`p-3 md:p-5 rounded-xl space-y-3 animate-in slide-in-from-top-2 duration-200 ${isDarkTheme ? "bg-zinc-900 border border-zinc-800" : "bg-white border border-zinc-200 shadow-sm"}`}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+              <div className="space-y-1 md:space-y-2">
+                <label className={`text-[10px] md:text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Status</label>
                 <Select value={filterStatus} onValueChange={(v: FilterStatus) => setFilterStatus(v)}>
-                  <SelectTrigger className={`h-11 border-2 rounded-xl font-medium ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600" : "bg-zinc-50 border-zinc-300 text-zinc-900 hover:border-zinc-400"}`}>
+                  <SelectTrigger className={`h-9 md:h-11 text-xs md:text-sm border rounded-lg ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-300"}`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className={`rounded-xl ${isDarkTheme ? "bg-zinc-800 border-zinc-700" : "bg-white border-zinc-200"}`}>
-                    <SelectItem value="all" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>All Tasks</SelectItem>
-                    <SelectItem value="active" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Active Only</SelectItem>
-                    <SelectItem value="completed" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Completed Only</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className={`text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Category</label>
+              <div className="space-y-1 md:space-y-2">
+                <label className={`text-[10px] md:text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Category</label>
                 <Select value={filterCategory} onValueChange={(v: TodoCategory | "all") => setFilterCategory(v)}>
-                  <SelectTrigger className={`h-11 border-2 rounded-xl font-medium ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600" : "bg-zinc-50 border-zinc-300 text-zinc-900 hover:border-zinc-400"}`}>
+                  <SelectTrigger className={`h-9 md:h-11 text-xs md:text-sm border rounded-lg ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-300"}`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className={`rounded-xl ${isDarkTheme ? "bg-zinc-800 border-zinc-700" : "bg-white border-zinc-200"}`}>
-                    <SelectItem value="all" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>All Categories</SelectItem>
-                    <SelectItem value="Work" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Work</SelectItem>
-                    <SelectItem value="Personal" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Personal</SelectItem>
-                    <SelectItem value="Health" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Health</SelectItem>
-                    <SelectItem value="Learning" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Learning</SelectItem>
-                    <SelectItem value="Shopping" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Shopping</SelectItem>
-                    <SelectItem value="Other" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Other</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    {Object.keys(CATEGORY_COLORS).map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className={`text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Priority</label>
+              <div className="space-y-1 md:space-y-2">
+                <label className={`text-[10px] md:text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Priority</label>
                 <Select value={filterPriority} onValueChange={(v: Priority | "all") => setFilterPriority(v)}>
-                  <SelectTrigger className={`h-11 border-2 rounded-xl font-medium ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600" : "bg-zinc-50 border-zinc-300 text-zinc-900 hover:border-zinc-400"}`}>
+                  <SelectTrigger className={`h-9 md:h-11 text-xs md:text-sm border rounded-lg ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-300"}`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className={`rounded-xl ${isDarkTheme ? "bg-zinc-800 border-zinc-700" : "bg-white border-zinc-200"}`}>
-                    <SelectItem value="all" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>All Priorities</SelectItem>
-                    <SelectItem value="High" className="text-red-600 font-semibold focus:bg-red-50">High Priority</SelectItem>
-                    <SelectItem value="Medium" className="text-blue-600 font-semibold focus:bg-blue-50">Medium Priority</SelectItem>
-                    <SelectItem value="Low" className={`font-semibold ${isDarkTheme ? "text-zinc-400 focus:bg-zinc-700" : "text-zinc-600 focus:bg-zinc-50"}`}>Low Priority</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Low">Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className={`text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Sort By</label>
+              <div className="space-y-1 md:space-y-2">
+                <label className={`text-[10px] md:text-xs font-bold uppercase tracking-wider block ${isDarkTheme ? "text-zinc-400" : "text-zinc-700"}`}>Sort</label>
                 <Select value={sortBy} onValueChange={(v: SortOption) => setSortBy(v)}>
-                  <SelectTrigger className={`h-11 border-2 rounded-xl font-medium ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600" : "bg-zinc-50 border-zinc-300 text-zinc-900 hover:border-zinc-400"}`}>
+                  <SelectTrigger className={`h-9 md:h-11 text-xs md:text-sm border rounded-lg ${isDarkTheme ? "bg-zinc-800 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-300"}`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className={`rounded-xl ${isDarkTheme ? "bg-zinc-800 border-zinc-700" : "bg-white border-zinc-200"}`}>
-                    <SelectItem value="newest" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Newest First</SelectItem>
-                    <SelectItem value="oldest" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Oldest First</SelectItem>
-                    <SelectItem value="priority-high" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>High Priority First</SelectItem>
-                    <SelectItem value="priority-low" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Low Priority First</SelectItem>
-                    <SelectItem value="category" className={`${isDarkTheme ? "text-white focus:bg-zinc-700" : "text-zinc-900"}`}>Group by Category</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="oldest">Oldest</SelectItem>
+                    <SelectItem value="priority-high">High Priority</SelectItem>
+                    <SelectItem value="priority-low">Low Priority</SelectItem>
+                    <SelectItem value="category">Category</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t ${isDarkTheme ? "border-zinc-800" : "border-zinc-200"}`}>
+            <div className={`flex justify-between items-center pt-2 md:pt-3 border-t ${isDarkTheme ? "border-zinc-800" : "border-zinc-200"}`}>
               <Button
                 onClick={() => {
                   setFilterStatus("all");
@@ -344,19 +334,18 @@ export function Momentum({
                 variant="ghost"
                 size="sm"
                 disabled={!hasActiveFilters}
-                className={`text-sm font-semibold h-9 px-4 rounded-lg ${isDarkTheme ? "text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 disabled:text-zinc-700" : "text-blue-600 hover:text-blue-700 hover:bg-blue-50 disabled:text-zinc-300"}`}
+                className="text-xs h-8 px-2"
               >
-                Clear All Filters
+                Clear Filters
               </Button>
               {stats.completed > 0 && (
                 <Button
                   onClick={deleteCompleted}
                   variant="outline"
                   size="sm"
-                  className={`text-sm font-semibold h-9 px-4 rounded-lg border-2 ${isDarkTheme ? "text-red-400 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50" : "text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"}`}
+                  className={`text-xs h-8 px-2 border ${isDarkTheme ? "text-red-400 border-red-500/30" : "text-red-600 border-red-200"}`}
                 >
-                  <Trash className="w-3.5 h-3.5 mr-1.5" />
-                  Delete {stats.completed} Completed
+                  Clear Done
                 </Button>
               )}
             </div>
@@ -365,62 +354,47 @@ export function Momentum({
       </div>
 
       {/* Todo List */}
-      <div className="space-y-3">
+      <div className="space-y-2 md:space-y-3">
         {filteredAndSortedTodos.length === 0 ? (
-          <div className={`text-center py-16 md:py-20 border-2 border-dashed rounded-[1.5rem] md:rounded-[2.5rem] transition-colors ${isDarkTheme ? "bg-zinc-900 border-zinc-800" : "bg-zinc-50 border-zinc-200"}`}>
-            <Zap className={`w-10 h-10 md:w-12 md:h-12 mx-auto mb-4 ${isDarkTheme ? "text-zinc-700" : "text-zinc-200"}`} />
-            <h3 className={`text-base md:text-lg font-bold uppercase tracking-widest mb-2 ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`}>
-              {hasActiveFilters ? "No Tasks Found" : "No Tasks Yet"}
+          <div className={`text-center py-12 md:py-20 border-2 border-dashed rounded-2xl md:rounded-[2.5rem] transition-colors ${isDarkTheme ? "bg-zinc-900 border-zinc-800" : "bg-zinc-50 border-zinc-200"}`}>
+            <Zap className={`w-8 h-8 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 ${isDarkTheme ? "text-zinc-700" : "text-zinc-200"}`} />
+            <h3 className={`text-sm md:text-lg font-bold uppercase tracking-widest mb-1 ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`}>
+              {hasActiveFilters ? "No Tasks" : "Empty"}
             </h3>
-            <p className={`text-sm mb-4 ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`}>
-              {hasActiveFilters ? "Try adjusting your filters" : "Click the + button to create your first task"}
+            <p className={`text-xs md:text-sm ${isDarkTheme ? "text-zinc-600" : "text-zinc-400"}`}>
+              {hasActiveFilters ? "Adjust filters" : "Create a task"}
             </p>
-            {hasActiveFilters && (
-              <Button
-                onClick={() => {
-                  setFilterStatus("all");
-                  setFilterCategory("all");
-                  setFilterPriority("all");
-                  setSearchQuery("");
-                }}
-                variant="outline"
-                size="sm"
-                className={`rounded-xl ${isDarkTheme ? "border-zinc-800 hover:bg-zinc-800" : ""}`}
-              >
-                Clear Filters
-              </Button>
-            )}
           </div>
         ) : (
           filteredAndSortedTodos.map((todo) => (
             <div
               key={todo.id}
-              className={`group transition-all duration-300 rounded-2xl md:rounded-3xl border ${todo.completed
+              className={`group transition-all duration-300 rounded-xl md:rounded-3xl border ${todo.completed
                 ? isDarkTheme
                   ? "bg-zinc-900/50 border-zinc-800 opacity-60"
                   : "bg-zinc-50/50 border-zinc-100 opacity-60"
                 : isDarkTheme
-                  ? "bg-zinc-900 border-zinc-800 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5"
-                  : "bg-white border-zinc-200 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5"
+                  ? "bg-zinc-900 border-zinc-800"
+                  : "bg-white border-zinc-200 shadow-sm"
                 }`}
             >
-              <div className="flex items-start justify-between p-4 md:p-5 gap-3 md:gap-5">
-                <div className="flex items-start gap-3 md:gap-5 flex-1 min-w-0">
+              <div className="flex items-start justify-between p-3 md:p-5 gap-3">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
                   <button
                     onClick={() => toggleTodo(todo.id)}
-                    className={`mt-1 transition-all duration-500 transform active:scale-75 flex-shrink-0 ${todo.completed ? "text-blue-600" : "text-zinc-300 hover:text-blue-400"
+                    className={`mt-0.5 md:mt-1 transition-all flex-shrink-0 ${todo.completed ? "text-blue-600" : "text-zinc-300 hover:text-blue-400"
                       }`}
                   >
                     {todo.completed ? (
-                      <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 fill-blue-50" />
+                      <CheckCircle2 className="w-5 h-5 md:w-8 md:h-8 fill-blue-50" />
                     ) : (
-                      <Circle className="w-6 h-6 md:w-8 md:h-8 stroke-[1.5px]" />
+                      <Circle className="w-5 h-5 md:w-8 md:h-8 stroke-[1.5px]" />
                     )}
                   </button>
 
-                  <div className="space-y-2 flex-1 min-w-0">
+                  <div className="space-y-1 md:space-y-2 flex-1 min-w-0">
                     <div>
-                      <p className={`text-base md:text-lg font-bold tracking-tight transition-all break-words ${todo.completed
+                      <p className={`text-sm md:text-lg font-medium md:font-bold tracking-tight break-words ${todo.completed
                         ? isDarkTheme ? "line-through text-zinc-600" : "line-through text-zinc-400"
                         : isDarkTheme ? "text-white" : "text-zinc-900"
                         }`}>
@@ -428,34 +402,26 @@ export function Momentum({
                       </p>
 
                       {todo.description && (
-                        <div className="mt-2">
+                        <div className="mt-1 md:mt-2">
                           {expandedTodos.has(todo.id) ? (
-                            <p className={`text-sm leading-relaxed whitespace-pre-wrap break-words ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
+                            <p className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap break-words ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
                               {todo.description}
-                            </p>
-                          ) : todo.description.length > 100 ? (
-                            <p className={`text-sm ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
-                              {todo.description.substring(0, 100)}...
                             </p>
                           ) : (
-                            <p className={`text-sm leading-relaxed whitespace-pre-wrap break-words ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
-                              {todo.description}
+                            <p className={`text-xs md:text-sm ${isDarkTheme ? "text-zinc-400" : "text-zinc-600"}`}>
+                              {todo.description.substring(0, 60)}...
                             </p>
                           )}
 
-                          {todo.description.length > 100 && (
+                          {todo.description.length > 60 && (
                             <button
                               onClick={() => toggleExpand(todo.id)}
-                              className={`flex items-center gap-1 mt-1 text-xs font-semibold transition-colors ${isDarkTheme ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
+                              className={`flex items-center gap-1 mt-1 text-[10px] md:text-xs font-semibold ${isDarkTheme ? "text-blue-400" : "text-blue-600"}`}
                             >
                               {expandedTodos.has(todo.id) ? (
-                                <>
-                                  Show less <ChevronUp className="w-3 h-3" />
-                                </>
+                                <>Less <ChevronUp className="w-3 h-3" /></>
                               ) : (
-                                <>
-                                  Show more <ChevronDown className="w-3 h-3" />
-                                </>
+                                <>More <ChevronDown className="w-3 h-3" /></>
                               )}
                             </button>
                           )}
@@ -463,10 +429,10 @@ export function Momentum({
                       )}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
                       <Badge
                         variant="outline"
-                        className={`text-[9px] font-black uppercase tracking-widest px-2 py-0 border-none rounded-md ${todo.priority === "High" ? "bg-red-50 text-red-600" :
+                        className={`text-[9px] md:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0 border-none rounded-md ${todo.priority === "High" ? "bg-red-50 text-red-600" :
                           todo.priority === "Medium" ? "bg-blue-50 text-blue-600" :
                             "bg-zinc-100 text-zinc-600"
                           }`}
@@ -476,7 +442,7 @@ export function Momentum({
                       {todo.category && (
                         <Badge
                           variant="outline"
-                          className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0 rounded-md border ${isDarkTheme ? CATEGORY_COLORS_DARK[todo.category] : CATEGORY_COLORS[todo.category]
+                          className={`text-[9px] md:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0 rounded-md border ${isDarkTheme ? CATEGORY_COLORS_DARK[todo.category] : CATEGORY_COLORS[todo.category]
                             }`}
                         >
                           {todo.category}
@@ -490,7 +456,7 @@ export function Momentum({
                   variant="ghost"
                   size="icon"
                   onClick={() => deleteTodo(todo.id)}
-                  className={`opacity-0 group-hover:opacity-100 h-9 w-9 md:h-10 md:w-10 rounded-xl md:rounded-2xl transition-all flex-shrink-0 ${isDarkTheme ? "text-zinc-600 hover:text-red-400 hover:bg-red-500/10" : "text-zinc-300 hover:text-red-500 hover:bg-red-50"}`}
+                  className={`h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-2xl shrink-0 ${isDarkTheme ? "text-zinc-600 hover:text-red-400 hover:bg-red-500/10" : "text-zinc-300 hover:text-red-500 hover:bg-red-50"}`}
                 >
                   <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
@@ -503,13 +469,11 @@ export function Momentum({
       {/* Floating Action Button */}
       <button
         onClick={() => setIsDialogOpen(true)}
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 h-14 w-14 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-2xl shadow-blue-900/30 hover:shadow-blue-900/50 hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center z-40 group"
-        aria-label="Add new task"
+        className="fixed bottom-4 right-4 md:bottom-8 md:right-8 h-12 w-12 md:h-16 md:w-16 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/30 flex items-center justify-center z-40 transition-transform active:scale-95"
       >
-        <Plus className="w-7 h-7 md:w-8 md:h-8 group-hover:rotate-90 transition-transform duration-300" />
+        <Plus className="w-6 h-6 md:w-8 md:h-8" />
       </button>
 
-      {/* Add Todo Dialog */}
       <AddTodoDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
