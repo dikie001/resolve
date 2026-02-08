@@ -131,7 +131,7 @@ export function Resolutions({
           <Target className="absolute right-[-30px] bottom-[-30px] w-56 h-56 text-black opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
         </div>
 
-        <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-7 flex flex-col justify-between group hover:border-amber-500/20 transition-colors">
+        <div className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-7 flex flex-col justify-between group hover:border-amber-500/20 transition-colors">
           <div className="flex justify-between items-start">
             <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
               Global Completion
@@ -239,19 +239,20 @@ export function Resolutions({
         </div>
       )}
 
-      {/* New Resolution Dialog */}
+      {/* New Resolution Dialog - Optimized for Mobile */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-950 border-white/5 text-white rounded-[2rem] w-[95vw] sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-amber-500 italic tracking-tighter">
+        <DialogContent className="bg-zinc-950 border-white/5 text-white rounded-2xl md:rounded-[2rem] w-[90vw] md:w-[95vw] sm:max-w-[425px] max-h-[85vh] overflow-y-auto p-5 md:p-6">
+          <DialogHeader className="mb-2 md:mb-0">
+            <DialogTitle className="text-xl md:text-2xl font-black text-amber-500 italic tracking-tighter">
               NEW PROTOCOL
             </DialogTitle>
-            <DialogDescription className="text-zinc-500 font-medium">
+            <DialogDescription className="text-zinc-500 font-medium text-xs md:text-sm">
               Initialize a new long-term strategic objective dikie.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-6 py-6">
-            <div className="space-y-2">
+          
+          <div className="space-y-4 md:space-y-6 py-2 md:py-4">
+            <div className="space-y-1.5 md:space-y-2">
               <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
                 Objective Title
               </label>
@@ -260,12 +261,13 @@ export function Resolutions({
                 onChange={(e) =>
                   setNewRes({ ...newRes, title: e.target.value })
                 }
-                className="bg-zinc-900 border-none h-12 rounded-xl focus-visible:ring-amber-500"
+                className="bg-zinc-900 border-none h-10 md:h-12 rounded-xl focus-visible:ring-amber-500 text-sm md:text-base"
                 placeholder="e.g. Master React Native"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+            
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
+              <div className="space-y-1.5 md:space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
                   Target
                 </label>
@@ -275,10 +277,10 @@ export function Resolutions({
                   onChange={(e) =>
                     setNewRes({ ...newRes, target: Number(e.target.value) })
                   }
-                  className="bg-zinc-900 border-none h-12 rounded-xl"
+                  className="bg-zinc-900 border-none h-10 md:h-12 rounded-xl text-sm md:text-base"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5 md:space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
                   Unit
                 </label>
@@ -287,12 +289,13 @@ export function Resolutions({
                   onChange={(e) =>
                     setNewRes({ ...newRes, unit: e.target.value })
                   }
-                  className="bg-zinc-900 border-none h-12 rounded-xl"
+                  className="bg-zinc-900 border-none h-10 md:h-12 rounded-xl text-sm md:text-base"
                   placeholder="%"
                 />
               </div>
             </div>
-            <div className="space-y-2">
+            
+            <div className="space-y-1.5 md:space-y-2">
               <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
                 Category
               </label>
@@ -302,7 +305,7 @@ export function Resolutions({
                   setNewRes({ ...newRes, category: v as Category })
                 }
               >
-                <SelectTrigger className="bg-zinc-900 border-none h-12 rounded-xl">
+                <SelectTrigger className="bg-zinc-900 border-none h-10 md:h-12 rounded-xl text-sm md:text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900 border-zinc-800 text-white rounded-xl">
@@ -317,10 +320,11 @@ export function Resolutions({
               </Select>
             </div>
           </div>
+          
           <DialogFooter>
             <Button
               onClick={addResolution}
-              className="w-full bg-amber-600 hover:bg-amber-500 text-black font-black h-14 rounded-2xl transition-all shadow-lg shadow-amber-900/40"
+              className="w-full bg-amber-600 hover:bg-amber-500 text-black font-black h-12 md:h-14 rounded-xl md:rounded-2xl transition-all shadow-lg shadow-amber-900/40 text-sm md:text-base"
             >
               CONFIRM PROTOCOL
             </Button>

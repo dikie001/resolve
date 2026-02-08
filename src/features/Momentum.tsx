@@ -184,7 +184,7 @@ export function Momentum({
       {/* Velocity Stats Section - Compact Mobile */}
       <div className="grid grid-cols-1 gap-4">
         <Card className="bg-linear-to-br -mt-10 md:-mt-4 from-blue-600 via-blue-700 to-indigo-900 border-none text-white rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl shadow-blue-900/20 overflow-hidden relative group">
-          <CardContent className="p-4 md:p-8 relative z-10">
+          <CardContent className="p-2 md:p-4 px-8 md:px-12 relative z-10">
             <div className="flex flex-col gap-4 md:gap-6">
               <div className="flex flex-row justify-between items-center gap-4">
                 <div className="space-y-1 md:space-y-2 flex-1">
